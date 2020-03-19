@@ -1,0 +1,22 @@
+{
+   "name": "hashrule",
+   "version": "0.1.3",
+   "description": "Unidimensional cellular automaton computation and rendering module",
+   "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
+   "license": "ISC",
+   "scripts": {
+      "build": "parcel build src/page/page.html -d public -o index.html"
+   },
+   "devDependencies": {
+      "@types/node": "^13.1.1",
+      "prettier": "^1.19.1",
+      "run-ts": "^1.0.6",
+      "ts-node": "^8.5.4",
+      "typescript": "^3.7.5"
+   },
+   "dependencies": {
+      "js-xxhash": "^1.0.4",
+      "parcel": "^1.12.4",
+      "rxjs": "^6.5.4"
+   }
+}
