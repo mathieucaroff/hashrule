@@ -111,15 +111,19 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     * @param prop contains the target region and the output function
     */
    let request = (prop: RequestProp) => {
-      let { region: area, output } = prop
-      let frame = Frame.fromArea(area)
+      let { region, output } = prop
 
-      upFitTo(frame)
+      upFitTo(region)
 
-      let relativeRegion = Region.recenter(area, {
-         x: area.center.x - root.x,
-         y: area.center.y - root.y,
+      console.log('request', root.cell.automaton.level, root.cell.id)
+
+      let relativeRegion = Region.recenter(region, {
+         x: region.center.x - root.x,
+         y: region.center.y - root.y,
       })
+
+      console.log('region', relativeRegion.rect)
+
       explore(root.cell, relativeRegion, {
          propagate: halfPropagate,
          cellRegionGetter: halfCellRegion,
@@ -139,6 +143,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     * @param cell the cell whose image is wanted
     */
    let derivateImage = (cell: AirCell): ImageData => {
+      console.log('derivateImage', cell.automaton.level, cell.id)
       let region = halfCellRegion(cell)
       let { height, width } = region
 
@@ -169,6 +174,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     * @param cell the cell whose boiled content is wanted
     */
    let derivateBoiledContent = (cell: AirCell): BoiledContent => {
+      console.log('derivateBoiled', cell.automaton.level, cell.id)
       let height = 2 ** cell.automaton.level
 
       let content: Content = createArray2d(height, cell.automaton.size, -1)
@@ -197,7 +203,10 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     *
     * obtain the content of a ground cell
     */
-   let derivateContent = (cell: GroundCell): Content => [cell.result()]
+   let derivateContent = (cell: GroundCell): Content => {
+      console.log('derivateContent', cell.automaton.level, cell.id)
+      return [cell.result()]
+   }
 
    return {
       request,

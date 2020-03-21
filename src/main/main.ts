@@ -16,7 +16,7 @@ export let main = () => {
 
    //
    canvas.width = 100
-   canvas.height = 250
+   canvas.height = 200
 
    let display = createDisplay({
       canvas,
@@ -63,9 +63,11 @@ export let main = () => {
    let t = 0
    let render = () => {
       hashlife.request({
-         region: Region.fromArea({
-            center: { x: 0, y: 100 + t },
-            size: { x: canvas.width - 2, y: canvas.height - 2 },
+         region: Region.fromRect({
+            x: 0,
+            y: 0,
+            width: canvas.width,
+            height: canvas.height,
          }),
          output: display.put,
       })

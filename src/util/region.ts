@@ -72,9 +72,15 @@ export let Region = {
       let rect = Rect.fromArea(area)
       return expand(area, Frame.fromRect(rect), rect)
    },
+   justArea: (region: Region) => {
+      return {
+         center: region.center,
+         size: region.size,
+      }
+   },
    recenter: (region: Region, center: Pair): Region => {
       return Region.fromArea({
-         center,
+         center: center,
          size: region.size,
       })
    },
@@ -87,8 +93,8 @@ export let Area = {
          y: rect.height,
       },
       center: {
-         x: rect.x + Math.floor(rect.width / 2),
-         y: rect.x + Math.floor(rect.width / 2),
+         x: rect.x + Math.ceil(rect.width / 2),
+         y: rect.x + Math.ceil(rect.width / 2),
       },
    }),
 }

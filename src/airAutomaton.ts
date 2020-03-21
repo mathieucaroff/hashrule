@@ -48,6 +48,9 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       x: number,
       prop: AnchorProp,
    ): AirCell => {
+      console.assert(aa.automaton === child, 'aa.automaton === child')
+      console.assert(bb.automaton === child, 'bb.automaton === child')
+
       let xleft = x - size
       let xright = x + size
 
@@ -125,11 +128,11 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       x: number,
       prop: AnchorProp,
    ): AnchoredAirCell => {
-      let ymidup = y + (3 * height) / 4 // /!\ sign might be off
-      let ymid = y + height / 2
-      let ymiddown = y + height / 4
+      let ymidup = y - (3 * height) / 4
+      let ymid = y - height / 2
+      let ymiddown = y - height / 4
       let ybot = y
-      let yinf = y - height / 2 // /!\ sign might be off
+      let yinf = y + height / 2
 
       let xleft = x - size / 2
       let xmidleft = x - size / 4
@@ -199,7 +202,7 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       let rc = () => center().result()
       let rr = bb.result
 
-      let mmy = y + (3 * height) / 8 // /!\ sign might be off
+      let mmy = y - (3 * height) / 8
 
       let mcc = memoized(() =>
          cccs(rl().left.right, rl().right.left, mmy, xleft, prop),

@@ -1,6 +1,5 @@
 import { AirCell, Cell } from './cellType'
 import { Frame, Region } from './util/region'
-import { Pair } from '../type/Pair'
 
 export interface ExploreProp {
    level: number
@@ -77,21 +76,21 @@ export let fullPropagate = (
 
    let { center } = region
 
-   let recenter = recenterFunction(region.size)
+   let recenter = (x: number, y: number) => Region.recenter(region, { x, y })
 
-   let cytop = center.y - height / 2 // /!\ sign might be off
+   let cytop = center.y + height / 2
    if (cell.automaton.level === 1) {
-      callback(cell.left, recenter(center.x - size / 2, cytop))
+      callback(cell.left, recenter(center.x + size / 2, cytop))
       callback(cell.center(), recenter(center.x + 0, cytop))
-      callback(cell.right, recenter(center.x + size / 2, cytop))
+      callback(cell.right, recenter(center.x - size / 2, cytop))
    } else {
-      callback(cell.highleft(), recenter(center.x - size / 4, cytop))
-      callback(cell.highright(), recenter(center.x + size / 4, cytop))
+      callback(cell.highleft(), recenter(center.x + size / 4, cytop))
+      callback(cell.highright(), recenter(center.x - size / 4, cytop))
    }
 
    let cybot = center.y
-   callback(cell.midleft(), recenter(center.x - size / 4, cybot))
-   callback(cell.midright(), recenter(center.x + size / 4, cybot))
+   callback(cell.midleft(), recenter(center.x + size / 4, cybot))
+   callback(cell.midright(), recenter(center.x - size / 4, cybot))
 }
 
 /**
@@ -113,21 +112,15 @@ export let halfPropagate = (
 
    let { center } = region
 
-   let recenter = recenterFunction(region.size)
+   let recenter = (x: number, y: number) => Region.recenter(region, { x, y })
 
-   let cytop = center.y - height / 4 // /!\ sign might be off
-   callback(cell.lowtopleft(), recenter(center.x - size / 8, cytop))
-   callback(cell.lowtopright(), recenter(center.x + size / 8, cytop))
+   let cytop = center.y + height / 4
+   callback(cell.lowtopleft(), recenter(center.x + size / 8, cytop))
+   callback(cell.lowtopright(), recenter(center.x - size / 8, cytop))
 
    let cybot = center.y
-   callback(cell.lowbotleft(), recenter(center.x - size / 8, cybot))
-   callback(cell.lowbotright(), recenter(center.x + size / 8, cybot))
-}
-
-let recenterFunction = (size: Pair) => {
-   return (x: number, y: number) => {
-      return Region.fromArea({ size, center: { x, y } })
-   }
+   callback(cell.lowbotleft(), recenter(center.x + size / 8, cybot))
+   callback(cell.lowbotright(), recenter(center.x - size / 8, cybot))
 }
 
 export let fullCellRegion = (cell: Cell): Region => {

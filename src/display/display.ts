@@ -8,6 +8,8 @@ export interface DisplayProp {
    canvas: HTMLCanvasElement
 }
 
+let w: any = window
+
 export let createDisplay = (prop: DisplayProp): Display => {
    let { canvas } = prop
    let ctx0 = canvas.getContext('2d')
@@ -21,15 +23,12 @@ export let createDisplay = (prop: DisplayProp): Display => {
    return {
       put: (image, region) => {
          if (a == 0) {
-            let w: any = window
             w.image = image
             w.region = region
             w.ctx = ctx
          }
-         // if (a % 60 == 0) {
-         //    console.log('put()', image, pos)
-         // }
          a++
+         w.a = a
          ctx.putImageData(image, region.x, region.y)
       },
    }

@@ -39,9 +39,13 @@ export interface RequestProp {
     */
    region: Region
    /**
-    * Accepts an imageData and the location of its center,
-    * and puts it at the right place in the canvas.
-    * (`putImageData`)
+    * An OutputFunction is a function that accepts an imageData and a region
+    * describing where that image should be put.
+    *
+    * This interface was designed to be used with putImageData, putting the
+    * imageData in a canvas.
+    *
+    * The size of the region will always match that of the passed imageData.
     */
    output: OutputFunction
 }
