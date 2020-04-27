@@ -8,6 +8,7 @@ import {
    FloatingCell,
 } from './cellType'
 import { memoized } from './util/memoized'
+import { flatCell } from './trash/flatCell'
 
 export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
    let id = 0
@@ -28,6 +29,7 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
             borderVert: [],
             getBorderCell: () => 0,
             mergeMethodName: 'fuse',
+            weight: 'floating',
          }) as any
          aa.__table[bb.id] = fusion
       }
@@ -48,27 +50,35 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       x: number,
       prop: AnchorProp,
    ): AirCell => {
+      // console.log('summon', aa.weight, aa.id, bb.weight, bb.id, y, x)
       console.assert(aa.automaton === child, 'aa.automaton === child')
       console.assert(bb.automaton === child, 'bb.automaton === child')
 
-      let xleft = x - size
-      let xright = x + size
+      let xfarleft = x - size
+      let xfarright = x + size
 
       let ytop = y - height
-      let ybot = y
+      let yfarinf = y + height
+      // yfarinf
+      // form this y position onward, there are no state that the cell can
+      // predict for sure (at any x position)
+      // yfarinf is the "absolute bottom" of the cell
 
       let half = child.atomSize / 2
 
-      let xInCell = (xx: number) => xleft + half <= xx && xx < xright - half
+      let xInCell = (xx: number) =>
+         xfarleft + half <= xx && xx < xfarright - half
 
-      let yInCell = (yy: number) => ytop < yy && yy <= ybot
+      let yInCell = (yy: number) => ytop < yy && yy < yfarinf
 
+      // Anchored by an horizontal border ?
       let isAnchoredHoriz = () => {
          return Object.keys(prop.borderHoriz).some((key) => yInCell(+key))
       }
 
+      // Anchored by a vertical border ?
       let isAnchoredVert = () => {
-         if (ybot < +Object.keys(prop.borderHoriz).sort()[0]) {
+         if (yfarinf <= +Object.keys(prop.borderHoriz).sort()[0]) {
             return false
          }
          return Object.keys(prop.borderVert).some((key) => xInCell(+key))
@@ -79,12 +89,27 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       let isFull = () => aa.weight === 'floating' && bb.weight === 'floating'
 
       if (isAnchoredHoriz() || isAnchoredVert()) {
-         return createAnchoredCell(aa as any, bb as any, y, x, prop)
+         let summonedAA = child.summon(
+            aa.left as any,
+            aa.right as any,
+            y - height / 2,
+            x - size / 2,
+            prop,
+         ) // Give summon a change to transform a void cell into an anchored cell
+         let summonedBB = child.summon(
+            bb.left as any,
+            bb.right as any,
+            y - height / 2,
+            x + size / 2,
+            prop,
+         ) // ...
+         return createAnchoredCell(summonedAA, summonedBB, y, x, prop)
       } else if (isVoid()) {
          return voidCell
       } else if (isFull()) {
          return fuse(aa as any, bb as any)
       } else {
+         debugger
          throw new Error()
          // Unholly mix of void and non-void cells without a border
       }
@@ -127,7 +152,23 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       y: number,
       x: number,
       prop: AnchorProp,
-   ): AnchoredAirCell => {
+   ): AirCell => {
+      // console.log(
+      //    'createAC',
+      //    prop.mergeMethodName,
+      //    flatCell(aa),
+      //    flatCell(bb),
+      //    y,
+      //    x,
+      // )
+      console.assert(aa.automaton.level === bb.automaton.level)
+
+      let ww = aa.weight + bb.weight
+      if (ww.includes('void') && ww !== 'voidvoid') {
+         console.error('createAnchoredCell', aa.automaton.level, aa, bb, y, x)
+         // Note: this criterion only holds for borderless topologies
+      }
+
       let ymidup = y - (3 * height) / 4
       let ymid = y - height / 2
       let ymiddown = y - height / 4
@@ -140,11 +181,14 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       let xmidright = x + size / 4
       let xright = x + size / 2
 
-      let cs = child?.summon
-      let ccs = child?.child?.summon
-      let cccs = child?.child?.child?.summon
+      type TSummon = typeof child['summon']
+      let cs: TSummon = child?.[prop.mergeMethodName] as any // child.summon or child.fuse
+      let ccs: TSummon = child?.child?.[prop.mergeMethodName] as any // ...
+      let cccs: TSummon = child?.child?.child?.[prop.mergeMethodName] as any // ...
 
-      let center = memoized(() => cs(aa.right, bb.left, ymid, xmid, prop))
+      let center = memoized(() => {
+         return cs(aa.right, bb.left, ymid, xmid, prop)
+      })
 
       let result = memoized(() =>
          cs(midleft().result(), midright().result(), yinf, xmid, prop),
@@ -174,11 +218,21 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       let highright = memoized(() =>
          cs(smallCenter(), smallRight(), ymid, xmidright, prop),
       )
-      let midleft = memoized(() =>
-         cs(aa.result(), center().result(), ybot, xleft, prop),
-      )
+      let midleft = memoized(() => {
+         // console.log(
+         //    'midleft',
+         //    aa.weight ?? '',
+         //    center().weight ?? '',
+         //    flatCell(aa.result()),
+         //    flatCell(center().result()),
+         //    ybot,
+         //    xmidleft,
+         // )
+         // debugger
+         return cs(aa.result(), center().result(), ybot, xmidleft, prop)
+      })
       let midright = memoized(() =>
-         cs(center().result(), bb.result(), ybot, xright, prop),
+         cs(center().result(), bb.result(), ybot, xmidright, prop),
       )
 
       /**
@@ -243,9 +297,9 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
          return cs(ha, hb, ybot, x + size / 8, prop)
       })
 
-      return {
+      let meCell: AnchoredAirCell = {
          type: 'air',
-         weight: 'anchored',
+         weight: prop.weight as any,
          id: newId(),
          left: aa,
          right: bb,
@@ -261,6 +315,14 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
          lowtopright,
          automaton: me,
       }
+
+      if (prop.weight === 'floating') {
+         ;(meCell as any).__table = []
+      }
+
+      // console.log('meCell', meCell)
+
+      return meCell
    }
 
    let fVoid = () => child.voidCell
@@ -271,7 +333,9 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
       left: child.voidCell,
       right: child.voidCell,
       center: fVoid,
-      result: fVoid,
+      result: () => {
+         throw new Error()
+      },
       highleft: fVoid,
       highright: fVoid,
       midleft: fVoid,
@@ -285,6 +349,7 @@ export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
 
    let me: AirAutomaton = {
       summon,
+      fuse,
       level,
       child,
       atomSize: child.atomSize,

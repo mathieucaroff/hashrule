@@ -23,6 +23,8 @@ export let main = () => {
    })
 
    let draw: DrawFunction = (input) => {
+      console.log('DRAW', input[0].slice(0, 5))
+
       let width = input[0].length
       let image = new ImageData(width, input.length)
 

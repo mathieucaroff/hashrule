@@ -1,7 +1,7 @@
 import { createAirAutomaton } from './airAutomaton'
 import { AirAutomaton, AnchorProp } from './automatonType'
 import { BoiledContent, Content } from './boilerType'
-import { cachedCellDerivationOutputFunction } from './cachedCellDerivationOutput'
+import { derivationCache } from './derivationCache'
 import { AirCell, Cell, GroundCell } from './cellType'
 import {
    explore,
@@ -16,6 +16,9 @@ import { createPolicy } from './policy'
 import { createArray2d } from './util/array2d'
 import { putFunction } from './util/putFunction'
 import { Frame, Region } from './util/region'
+import { flatCell } from './trash/flatCell'
+
+let w: any = window
 
 export let createHashlife = (prop: HashlifeProp): Hashlife => {
    let { automaton, boiler, draw, random } = prop
@@ -47,12 +50,17 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
          }
       },
       mergeMethodName: 'summon',
+      weight: 'anchored',
    }
 
    const groundAutomaton = createGroundAutomaton(automaton)
 
-   let summonRoot = (v: Cell) =>
-      root.automaton.summon(v, v, root.y, root.x, anchorInfo)
+   let summonRoot = (v: Cell) => {
+      let cell = root.automaton.summon(v, v, root.y, root.x, anchorInfo)
+      console.log('level, y', root.automaton.level, root.y)
+      console.log('result', flatCell(cell.result()))
+      return cell
+   }
 
    let root: {
       readonly x: number
@@ -61,7 +69,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
       cell: AirCell
    } = {
       x: 0,
-      y: 0,
+      y: 1,
       automaton: createAirAutomaton(groundAutomaton as any),
       cell: 0 as any,
    }
@@ -103,6 +111,8 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
       }
    }
 
+   let imageCache = derivationCache<ImageData>()
+
    /**
     * request
     *
@@ -115,25 +125,40 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
 
       upFitTo(region)
 
-      console.log('request', root.cell.automaton.level, root.cell.id)
+      if (w.d) debugger
 
       let relativeRegion = Region.recenter(region, {
          x: region.center.x - root.x,
          y: region.center.y - root.y,
       })
 
-      console.log('region', relativeRegion.rect)
+      // console.log(
+      //    'request',
+      //    root.cell.automaton.level,
+      //    root.cell.id,
+      //    relativeRegion.rect,
+      // )
 
       explore(root.cell, relativeRegion, {
          propagate: halfPropagate,
          cellRegionGetter: halfCellRegion,
          level: policy.imageLevel,
-         callback: cachedCellDerivationOutputFunction<AirCell, ImageData>({
+         callback: imageCache<AirCell>({
             derivate: derivateImage,
-            output,
+            output: (data, relativeRegion) => {
+               // relativeRegion is the original relativeRegion,
+               // but now relative to the given cell (`cell`)
+               let absoluteRegion = Region.recenter(relativeRegion, {
+                  x: relativeRegion.center.x + root.x,
+                  y: relativeRegion.center.y + root.y,
+               })
+               output(data, absoluteRegion)
+            },
          }),
       })
    }
+
+   let boiledContentCache = derivationCache<BoiledContent>()
 
    /**
     * derivateImage
@@ -144,6 +169,9 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     */
    let derivateImage = (cell: AirCell): ImageData => {
       console.log('derivateImage', cell.automaton.level, cell.id)
+
+      if (w.d) debugger
+
       let region = halfCellRegion(cell)
       let { height, width } = region
 
@@ -151,7 +179,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
 
       let putInBuffer = putFunction(boiledBuffer)
 
-      let ccdo = cachedCellDerivationOutputFunction<AirCell, BoiledContent>({
+      let callback = boiledContentCache<AirCell>({
          derivate: derivateBoiledContent,
          output: putInBuffer,
       })
@@ -160,7 +188,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
          propagate: halfPropagate,
          cellRegionGetter: halfCellRegion,
          level: policy.boilLevel,
-         callback: ccdo,
+         callback,
       })
 
       return draw(boiledBuffer)
@@ -175,6 +203,9 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     */
    let derivateBoiledContent = (cell: AirCell): BoiledContent => {
       console.log('derivateBoiled', cell.automaton.level, cell.id)
+
+      if (w.d) debugger
+
       let height = 2 ** cell.automaton.level
 
       let content: Content = createArray2d(height, cell.automaton.size, -1)
@@ -184,7 +215,7 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
       let putInContent = putFunction(content)
 
       let callback = (cell: Cell, region: Region) => {
-         if (cell.type === 'air') throw cell
+         if (cell.type === 'air') throw new Error()
          putInContent(derivateContent(cell), region)
       }
 
@@ -204,7 +235,10 @@ export let createHashlife = (prop: HashlifeProp): Hashlife => {
     * obtain the content of a ground cell
     */
    let derivateContent = (cell: GroundCell): Content => {
-      console.log('derivateContent', cell.automaton.level, cell.id)
+      // console.log('derivateContent', cell.automaton.level, cell.id)
+
+      if (w.d) debugger
+
       return [cell.result()]
    }
 

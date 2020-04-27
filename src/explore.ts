@@ -15,6 +15,30 @@ export interface ExploreProp {
 
 export type ExplorerCallback = (cell: AirCell, region: Region) => void
 
+/**
+ * Explore a cell untile a certain level is reached.
+ *
+ * @param cell The cell to explore
+ * @param region The part of the cell that needs exploring
+ * @param exploreProp {
+ *    @param level The level at which exploration must stop
+ *    @param callback The function to call when the level is reached. For each
+ *       cell hit at that level, this callback receives that cell along with the
+ *       starting region, moved so that its position is relative to the cell
+ *    @param cellRegionGetter The functiong to call to obtain the region covered
+ *       by a cell when computing intersections
+ *    @param propagate The function which knows what are the relevant child
+ *       cells of a given cell, and which uses that knowledge to calls the given
+ *       callback on each of these meaningful child cell. This is a key part of
+ *       the recursive exploration.
+ *       It accepts three parameters: A cell, a region and a callback
+ *       For each relevant child of the cell, it must compute the relative
+ *       region position, and call the callback passing it that child cell and
+ *       that relative region.
+ *       Note: this file provides {fullPropagate} and {halfPropagate}, these two
+ *       functions are meant to be used as {propagate} parameter of explore()
+ * }
+ */
 export let explore = (cell: Cell, region: Region, exploreProp: ExploreProp) => {
    console.assert(exploreProp.level >= 0)
    console.assert(cell.automaton.level >= exploreProp.level)
@@ -26,15 +50,17 @@ let exploreRecursive = (
    region: Region,
    exploreProp: ExploreProp,
 ) => {
-   console.log(
-      cell.automaton.level,
-      cell.id,
-      cell.type,
-      cell.weight,
-      region.center.x,
-      region.ytop,
-      region.ybottom,
-   )
+   // console.log(
+   //    'explore',
+   //    cell.automaton.level,
+   //    cell.id,
+   //    cell.type,
+   //    cell.weight,
+   //    'region',
+   //    region.center.x,
+   //    region.ytop,
+   //    region.ybottom,
+   // )
    if (emptyIntersection(exploreProp.cellRegionGetter(cell), region)) {
       return
    }
@@ -49,6 +75,11 @@ let exploreRecursive = (
    })
 }
 
+/**
+ * Tells whether two frames's intersection is empty
+ * @param a A frame
+ * @param b Another frame
+ */
 let emptyIntersection = (a: Frame, b: Frame): boolean => {
    return (
       a.xright <= b.xleft &&

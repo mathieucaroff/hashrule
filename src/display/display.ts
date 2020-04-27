@@ -13,15 +13,13 @@ let w: any = window
 export let createDisplay = (prop: DisplayProp): Display => {
    let { canvas } = prop
    let ctx0 = canvas.getContext('2d')
-   if (!ctx0) {
-      throw new Error()
-      // ctx is null
-   }
+   if (!ctx0) throw new Error() // ctx is null
    let ctx = ctx0
 
    let a = 0
    return {
       put: (image, region) => {
+         // console.log('Display.PUT')
          if (a == 0) {
             w.image = image
             w.region = region

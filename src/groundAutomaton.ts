@@ -16,6 +16,7 @@ export let createGroundAutomaton = (
    base: ArbitraryAutomaton,
 ): GroundAutomaton => {
    let table: Record<string, FloatingGroundCell> = {}
+   ;(window as any).groundTable = table
    let id = 0
 
    const atomSize = base.neigboorhoodSize - 1
@@ -47,6 +48,12 @@ export let createGroundAutomaton = (
       x: number,
       prop: AnchorProp,
    ): GroundCell => {
+      let ww = '' + aa + bb
+      if (ww.includes('-1') && ww !== '-1,-1-1,-1') {
+         console.error('ground.createAnchoredCell', aa, bb, y, x)
+         // Note: this criterion only holds for borderless topologies
+      }
+
       let isVoid = () => [aa, bb].every((zz) => zz.every((v) => v === -1))
       let isFull = () => [aa, bb].every((zz) => zz.every((v) => v !== -1))
 
@@ -67,12 +74,16 @@ export let createGroundAutomaton = (
       }
 
       if (isAnchoredHoriz() || isAnchoredVert()) {
+         // console.log('ground-anchored', y)
          return createAnchoredCell(aa, bb, y, x, prop)
       } else if (isVoid()) {
+         // console.log('ground-void', y, x)
          return voidCell
       } else if (isFull()) {
+         // console.log('ground-fuse')
          return fuse(aa, bb)
       } else {
+         // console.log('ground-error', y, x, aa, bb)
          throw new Error()
          // Unholly mix of void and non-void atoms without a border
       }
@@ -113,14 +124,15 @@ export let createGroundAutomaton = (
 
    let voidAtom: Atom = Array(atomSize).fill(-1)
 
-   let fVoid = () => voidAtom
    let voidCell: VoidGroundCell = {
       type: 'ground',
       weight: 'void',
       id: newId(),
       left: voidAtom,
       right: voidAtom,
-      result: fVoid,
+      result: () => {
+         throw new Error('VoidGroundCellResult')
+      },
       automaton: undefined as any,
    }
 
@@ -157,8 +169,8 @@ export let createGroundAutomaton = (
                   return prop.getBorderCell(borderIndex, xx)
                }
                let iSlice = input.slice(k, k + base.neigboorhoodSize)
-               let hasVoid = iSlice.some((v) => v === -1)
-               return hasVoid ? -1 : base.localRule(iSlice)
+               let sliceHasVoid = iSlice.some((v) => v === -1)
+               return sliceHasVoid ? -1 : base.localRule(iSlice)
             })
          }
 
@@ -178,6 +190,7 @@ export let createGroundAutomaton = (
 
    let me: GroundAutomaton = {
       summon,
+      fuse,
       level: 0,
       atomSize,
       size,

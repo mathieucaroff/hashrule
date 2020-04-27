@@ -13,28 +13,38 @@ import { Region } from './region'
  */
 export let putFunction = <T>(buffer: T[][]) => {
    return (data: T[][], region: Region) => {
-      let sy = data.length
-      let sx = data[0].length
+      let sky = data.length
+      let skx = data[0].length
 
-      let y0 = -region.y - sy + 1
-      let x0 = -region.x - sx / 2
+      // y0, x0
+      // location of the data, relative to the buffer
+      let y0 = -region.y - sky + 1
+      let x0 = -region.x - skx / 2
 
-      console.assert(sx % 2 === 0)
-      console.assert(y0 >= 0, 'y0 >= 0')
-      console.assert(x0 >= 0, 'x0 >= 0')
-      console.assert(y0 + sy < buffer.length)
-      console.assert(x0 + sx < buffer[0].length)
-
-      try {
-         for (let ky = 0, y = y0; ky < sy; ky++, y++) {
-            for (let kx = 0, x = x0; kx < sx; kx++, x++) {
-               buffer[y][x] = data[ky][kx]
-            }
-         }
-      } catch (e) {
-         console.log(e)
-         debugger
-         throw e
+      if (y0 < 0) {
+         y0 = 0
       }
+      if (x0 < 0) {
+         x0 = 0
+      }
+
+      console.assert(buffer.length === region.size.y)
+      console.assert(buffer[0].length === region.size.x)
+      let sy = buffer.length
+      let sx = buffer[0].length
+
+      // (x, y) pointer location for the buffer
+      // (kx, ky) pointer location for the data
+      // try {
+      for (let ky = 0, y = y0; ky < sky && y < sy; ky++, y++) {
+         for (let kx = 0, x = x0; kx < skx && x < sx; kx++, x++) {
+            buffer[y][x] = data[ky][kx]
+         }
+      }
+      // } catch (e) {
+      //    console.log(e)
+      //    debugger
+      //    throw e
+      // }
    }
 }

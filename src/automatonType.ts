@@ -42,7 +42,7 @@ export interface HashlifeBaseAutomaton<
     * This operation is cached using the ids and tables from the fused children
     * cells
     */
-   // fuse: (aa: TFuseIn, bb: TFuseIn) => TFuseOut
+   fuse: (aa: TFuseIn, bb: TFuseIn) => TFuseOut
    /**
     * summon
     * Accept:
@@ -76,6 +76,7 @@ export interface AnchorProp {
    // interface DivinIntervention extends Pair {  }
    getBorderCell: (borderIndex: number, pos: number) => number
    mergeMethodName: 'fuse' | 'summon'
+   weight: 'floating' | 'anchored'
 }
 
 /**
@@ -85,7 +86,7 @@ export interface AnchorProp {
  */
 export interface AirAutomaton
    extends HashlifeBaseAutomaton<
-      FloatingCell,
+      FloatingAirCell,
       FloatingAirCell,
       Cell,
       AirCell,
