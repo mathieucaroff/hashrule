@@ -2,8 +2,8 @@
 /*/
 tmp/
 
+!/drawing/
 !/src/
-!/type/
 
 # Files
 /.*
