@@ -1,7 +1,7 @@
-import { ArbitraryAutomaton } from './automatonType'
+import { ExternalAutomaton } from './automatonType'
 import { Boiler, BoiledContent } from './boilerType'
-import { RandomMapper } from './randomMapper'
-import { Region } from './util/region'
+import { RandomMapperObj } from '../randomMapper'
+import { Region } from '../util/region'
 
 export interface Hashlife {
    request: (prop: RequestProp) => void
@@ -11,7 +11,7 @@ export interface HashlifeProp {
    /**
     * Automaton to accelerate
     */
-   automaton: ArbitraryAutomaton
+   automaton: ExternalAutomaton
    /**
     * Produces boiled content from content.
     * Can be used to do pattern recognition.
@@ -25,7 +25,7 @@ export interface HashlifeProp {
     * Provides three deterministic seeded random function for top, left and
     * right borders
     */
-   random: RandomMapper
+   random: RandomMapperObj
    // /**
    //  * Finitness and size of the universe
    //  */

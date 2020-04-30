@@ -1,7 +1,7 @@
 import { Rule } from '../type/Rule'
-import { ArbitraryAutomaton } from './automatonType'
+import { ExternalAutomaton } from '../hashrule/type/automatonType'
 
-export let ruleToAutomaton = (rule: Rule): ArbitraryAutomaton => {
+export let ruleToAutomaton = (rule: Rule): ExternalAutomaton => {
    console.assert(rule.dimension === 1)
    console.assert(rule.stateCount === 2)
    console.assert(rule.neighborhoodSize === 3)

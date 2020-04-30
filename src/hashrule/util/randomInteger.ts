@@ -8,7 +8,7 @@ import { xxHash32 } from 'js-xxhash'
  * @param rangeSize the size of the range output
  * @returns a number between {0} included and {rangeSize} excluded
  */
-export let randrange = (
+export let randomInteger = (
    seedString: string,
    seedInt: number,
    rangeSize: number,
@@ -49,4 +49,4 @@ export let randrange = (
    return res!
 }
 
-export type Randrange = typeof randrange
+export type Randrange = typeof randomInteger

@@ -1,4 +1,4 @@
-import { Region } from '../util/region'
+import { Region } from '../hashrule/util/region'
 
 export interface Display {
    put: (image: ImageData, region: Region) => void

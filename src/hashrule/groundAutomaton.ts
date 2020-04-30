@@ -1,8 +1,9 @@
 import {
-   ArbitraryAutomaton,
+   ExternalAutomaton,
    GroundAutomaton,
    AnchorProp,
-} from './automatonType'
+} from './type/automatonType'
+
 import {
    AnchoredGroundCell,
    Atom,
@@ -10,10 +11,11 @@ import {
    VoidGroundCell,
    FloatingGroundCell,
 } from './cellType'
+
 import { memoized } from './util/memoized'
 
 export let createGroundAutomaton = (
-   base: ArbitraryAutomaton,
+   base: ExternalAutomaton,
 ): GroundAutomaton => {
    let table: Record<string, FloatingGroundCell> = {}
    ;(window as any).groundTable = table

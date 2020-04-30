@@ -1,6 +1,6 @@
 import { createAirAutomaton } from './airAutomaton'
-import { AirAutomaton, AnchorProp } from './automatonType'
-import { BoiledContent, Content } from './boilerType'
+import { AirAutomaton, AnchorProp } from './type/automatonType'
+import { BoiledContent, Content } from './type/boilerType'
 import { derivationCache } from './derivationCache'
 import { AirCell, Cell, GroundCell } from './cellType'
 import {
@@ -11,12 +11,12 @@ import {
    halfPropagate,
 } from './explore'
 import { createGroundAutomaton } from './groundAutomaton'
-import { Hashlife, HashlifeProp, RequestProp } from './hashlifeType'
+import { Hashlife, HashlifeProp, RequestProp } from './type/hashlifeType'
 import { createPolicy } from './policy'
 import { createArray2d } from './util/array2d'
 import { putFunction } from './util/putFunction'
 import { Frame, Region } from './util/region'
-import { flatCell } from './trash/flatCell'
+import { flatCell } from '../trash/flatCell'
 
 let w: any = window
 

@@ -8,7 +8,7 @@ import {
    GroundCell,
    VoidAirCell,
    VoidGroundCell,
-} from './cellType'
+} from '../cellType'
 
 /**
  * TFuseIn   : Type of  Input Cell for .fuse()
@@ -114,7 +114,7 @@ export interface GroundAutomaton
 
 export type HashlifeAutomaton = AirAutomaton | GroundAutomaton
 
-export interface ArbitraryAutomaton {
+export interface ExternalAutomaton {
    stateCount: number
    neigboorhoodSize: number
    localRule: (arr: number[]) => number

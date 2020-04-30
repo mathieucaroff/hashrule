@@ -1,5 +1,5 @@
-import { BoilerFunction, Boiler, BoiledPoint } from './boilerType'
-import { Pattern, PatternElement } from '../type/PatternType'
+import { BoilerFunction, Boiler, BoiledPoint } from './type/boilerType'
+import { Pattern, PatternElement } from './type/PatternType'
 
 export interface PatternBoilerProp {
    patternList: Pattern[]

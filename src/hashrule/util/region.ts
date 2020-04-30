@@ -1,4 +1,4 @@
-import { Pair } from '../../type/Pair'
+import { Pair } from '../type/Pair'
 
 /**
  * Area specified by the position of it's center, and it's horizontal and vertical sizes (width and height)

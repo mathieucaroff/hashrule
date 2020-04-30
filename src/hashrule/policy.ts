@@ -1,5 +1,5 @@
-import { Policy } from './policyType'
-import { Boiler } from './boilerType'
+import { Policy } from './type/policyType'
+import { Boiler } from './type/boilerType'
 
 let IMAGE_LEVEL_MIN = 8
 

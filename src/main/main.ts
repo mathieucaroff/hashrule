@@ -1,13 +1,13 @@
 import { createDisplay } from '../display/display'
-import { createHashlife } from '../hashlife'
+import { createHashlife } from '../hashrule/hashlife'
 import { initPage } from '../page/init'
-import { createPatternBoiler } from '../patternBoiler'
-import { createRandomMapper } from '../randomMapper'
-import { ruleToAutomaton } from '../ruleToAutomaton'
-import { randrange } from '../util/randrange'
+import { createPatternBoiler } from '../hashrule/patternBoiler'
+import { createRandomMapper } from '../hashrule/randomMapper'
+import { ruleToAutomaton } from '../rule/ruleToAutomaton'
+import { randomInteger } from '../hashrule/util/randomInteger'
 import { schedule } from './lib/schedule'
-import { DrawFunction } from '../hashlifeType'
-import { Region } from '../util/region'
+import { DrawFunction } from '../hashrule/type/hashlifeType'
+import { Region } from '../hashrule/util/region'
 
 let w: any = window
 
@@ -57,7 +57,7 @@ export let main = () => {
       }), // TODO later
       draw,
       random: createRandomMapper({
-         randrange,
+         randomInteger: randomInteger,
          seedString: '_',
       }),
    })
