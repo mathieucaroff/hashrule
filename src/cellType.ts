@@ -82,7 +82,6 @@ export type VoidCell = VoidAirCell | VoidGroundCell
 /**
  * CellGet
  */
-
 export interface CellGet<TC, F = () => TC> {
    // compute
    left: TC

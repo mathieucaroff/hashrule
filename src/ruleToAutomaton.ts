@@ -6,8 +6,8 @@ export let ruleToAutomaton = (rule: Rule): ArbitraryAutomaton => {
    console.assert(rule.stateCount === 2)
    console.assert(rule.neighborhoodSize === 3)
 
-   let bin = rule.number.toString(2)
-   let [n7, n6, n5, n4, n3, n2, n1, n0] = [...bin].map(parseInt)
+   let bin = rule.number.toString(2).padStart(8, '0')
+   let [n7, n6, n5, n4, n3, n2, n1, n0] = [...bin].map((x) => +x)
 
    let localRule = ([a, b, c]: number[]) =>
       (~a & ((~b & ((~c & n0) | (c & n1))) | (b & ((~c & n2) | (c & n3))))) |
