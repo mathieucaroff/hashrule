@@ -1,5 +1,5 @@
-import { AirCell, Cell } from './cellType'
-import { Frame, Region } from './util/region'
+import { AirCell, Cell } from '../type/cellType'
+import { Frame, Region } from '../type/rectType'
 
 export interface ExploreProp {
    level: number

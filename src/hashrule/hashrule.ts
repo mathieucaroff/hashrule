@@ -1,26 +1,26 @@
-import { createAirAutomaton } from './airAutomaton'
+import { createAirAutomaton } from './cell/airAutomaton'
 import { AirAutomaton, AnchorProp } from './type/automatonType'
 import { BoiledContent, Content } from './type/boilerType'
 import { derivationCache } from './derivationCache'
-import { AirCell, Cell, GroundCell } from './cellType'
+import { AirCell, Cell, GroundCell } from './type/cellType'
 import {
    explore,
    fullCellRegion,
    fullPropagate,
    halfCellRegion,
    halfPropagate,
-} from './explore'
-import { createGroundAutomaton } from './groundAutomaton'
-import { Hashlife, HashlifeProp, RequestProp } from './type/hashlifeType'
+} from './explore/explore'
+import { createGroundAutomaton } from './cell/groundAutomaton'
+import { Hashrule, HashruleProp, RequestProp } from './type/hashlifeType'
 import { createPolicy } from './policy'
 import { createArray2d } from './util/array2d'
 import { putFunction } from './util/putFunction'
-import { Frame, Region } from './util/region'
+import { Frame, Region } from './type/rectType'
 import { flatCell } from '../trash/flatCell'
 
 let w: any = window
 
-export let createHashlife = (prop: HashlifeProp): Hashlife => {
+export let createHashrule = (prop: HashruleProp): Hashrule => {
    let { automaton, boiler, draw, random } = prop
 
    console.log('hashlifeProp', prop)

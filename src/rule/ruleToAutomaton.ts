@@ -1,4 +1,4 @@
-import { Rule } from '../type/Rule'
+import { Rule } from '../type/ruleType'
 import { ExternalAutomaton } from '../hashrule/type/automatonType'
 
 export let ruleToAutomaton = (rule: Rule): ExternalAutomaton => {

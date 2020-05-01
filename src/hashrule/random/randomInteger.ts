@@ -49,4 +49,4 @@ export let randomInteger = (
    return res!
 }
 
-export type Randrange = typeof randomInteger
+export type RandomInteger = typeof randomInteger

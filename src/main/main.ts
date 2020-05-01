@@ -1,13 +1,14 @@
 import { createDisplay } from '../display/display'
-import { createHashlife } from '../hashrule/hashlife'
-import { initPage } from '../page/init'
-import { createPatternBoiler } from '../hashrule/patternBoiler'
-import { createRandomMapper } from '../hashrule/randomMapper'
-import { ruleToAutomaton } from '../rule/ruleToAutomaton'
-import { randomInteger } from '../hashrule/util/randomInteger'
-import { schedule } from './lib/schedule'
+import { createPatternBoiler } from '../hashrule/boiler/patternBoiler'
+import { createHashrule } from '../hashrule/hashrule'
+import { randomInteger } from '../hashrule/random/randomInteger'
+import { createRandomMapper } from '../hashrule/random/randomMapper'
+import { StochasticState } from '../hashrule/type/borderType'
 import { DrawFunction } from '../hashrule/type/hashlifeType'
-import { Region } from '../hashrule/util/region'
+import { Region } from '../hashrule/type/rectType'
+import { initPage } from '../page/init'
+import { ruleToAutomaton } from '../rule/ruleToAutomaton'
+import { schedule } from './lib/schedule'
 
 let w: any = window
 
@@ -44,8 +45,13 @@ export let main = () => {
       return image
    }
 
+   let zero: StochasticState = {
+      total: 2,
+      cumulativeMap: [1, 0],
+   }
+
    let neighborhoodSize = 3
-   let hashlife = createHashlife({
+   let hashlife = createHashrule({
       automaton: ruleToAutomaton({
          dimension: 1,
          neighborhoodSize,
@@ -60,6 +66,16 @@ export let main = () => {
          randomInteger: randomInteger,
          seedString: '_',
       }),
+      topology: {
+         finitness: 'infinite',
+         kind: 'both',
+         genesis: {
+            kind: 'top',
+            center: [],
+            cycleLeft: [zero],
+            cycleRight: [zero],
+         },
+      },
    })
 
    let t = 0

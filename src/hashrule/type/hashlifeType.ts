@@ -1,13 +1,14 @@
 import { ExternalAutomaton } from './automatonType'
-import { Boiler, BoiledContent } from './boilerType'
-import { RandomMapperObj } from '../randomMapper'
-import { Region } from '../util/region'
+import { BoiledContent, Boiler } from './boilerType'
+import { RandomMapperObj } from './randomMapper'
+import { Rect } from './rectType'
+import { TopologyInfiniteBoth } from './topologyType'
 
-export interface Hashlife {
+export interface Hashrule {
    request: (prop: RequestProp) => void
 }
 
-export interface HashlifeProp {
+export interface HashruleProp {
    /**
     * Automaton to accelerate
     */
@@ -26,18 +27,17 @@ export interface HashlifeProp {
     * right borders
     */
    random: RandomMapperObj
-   // /**
-   //  * Finitness and size of the universe
-   //  */
-   // topology: Topology
-   // We'll suppose that it is infinite
+   /**
+    * Finitness and size of the universe
+    */
+   topology: TopologyInfiniteBoth
 }
 
 export interface RequestProp {
    /**
     * The region that must be covered by the data sent to the output function
     */
-   region: Region
+   region: Rect
    /**
     * An OutputFunction is a function that accepts an imageData and a region
     * describing where that image should be put.
@@ -52,7 +52,7 @@ export interface RequestProp {
 
 export type DrawFunction = (input: BoiledContent) => ImageData
 
-export type OutputFunction = (image: ImageData, region: Region) => void
+export type OutputFunction = (image: ImageData, region: Rect) => void
 
 // About changes
 //

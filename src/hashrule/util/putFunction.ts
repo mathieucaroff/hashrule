@@ -1,4 +1,4 @@
-import { Region } from './region'
+import { Region } from '../type/rectType'
 
 /**
  * putFunction

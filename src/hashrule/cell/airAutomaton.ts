@@ -1,4 +1,4 @@
-import { AirAutomaton, AnchorProp } from './type/automatonType'
+import { AirAutomaton, AnchorProp } from '../type/automatonType'
 import {
    AirCell,
    AnchoredAirCell,
@@ -6,9 +6,9 @@ import {
    FloatingAirCell,
    VoidAirCell,
    FloatingCell,
-} from './cellType'
-import { memoized } from './util/memoized'
-import { flatCell } from '../trash/flatCell'
+} from '../type/cellType'
+import { memoized } from '../util/memoized'
+import { flatCell } from '../../trash/flatCell'
 
 export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
    let id = 0

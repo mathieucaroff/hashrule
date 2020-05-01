@@ -1,4 +1,4 @@
-import { GroundAutomaton, AirAutomaton } from './type/automatonType'
+import { GroundAutomaton, AirAutomaton } from './automatonType'
 
 /**
  * GroundCell

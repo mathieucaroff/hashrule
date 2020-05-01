@@ -2,7 +2,7 @@ import {
    ExternalAutomaton,
    GroundAutomaton,
    AnchorProp,
-} from './type/automatonType'
+} from '../type/automatonType'
 
 import {
    AnchoredGroundCell,
@@ -10,9 +10,9 @@ import {
    GroundCell,
    VoidGroundCell,
    FloatingGroundCell,
-} from './cellType'
+} from '../type/cellType'
 
-import { memoized } from './util/memoized'
+import { memoized } from '../util/memoized'
 
 export let createGroundAutomaton = (
    base: ExternalAutomaton,

@@ -8,7 +8,7 @@ import {
    GroundCell,
    VoidAirCell,
    VoidGroundCell,
-} from '../cellType'
+} from './cellType'
 
 /**
  * TFuseIn   : Type of  Input Cell for .fuse()

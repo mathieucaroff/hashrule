@@ -1,5 +1,5 @@
-import { Cell } from './cellType'
-import { Region } from './util/region'
+import { Cell } from './type/cellType'
+import { Region } from './type/rectType'
 
 export interface CcdoProp<TCell extends Cell, TDeriv> {
    derivate: (cell: TCell) => TDeriv

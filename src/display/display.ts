@@ -1,7 +1,7 @@
-import { Region } from '../hashrule/util/region'
+import { Rect } from '../hashrule/type/rectType'
 
 export interface Display {
-   put: (image: ImageData, region: Region) => void
+   put: (image: ImageData, region: Rect) => void
 }
 
 export interface DisplayProp {
@@ -18,16 +18,16 @@ export let createDisplay = (prop: DisplayProp): Display => {
 
    let a = 0
    return {
-      put: (image, region) => {
+      put: (image, rect) => {
          // console.log('Display.PUT')
          if (a == 0) {
             w.image = image
-            w.region = region
+            w.rect = rect
             w.ctx = ctx
          }
          a++
          w.a = a
-         ctx.putImageData(image, region.x, region.y)
+         ctx.putImageData(image, rect.x, rect.y)
       },
    }
 }
