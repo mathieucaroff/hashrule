@@ -1,5 +1,5 @@
 import ava from 'ava'
-import { Region, Frame, Area, Rect } from '../type/rectType'
+import { Region, Frame, Area } from '../type/rectType'
 
 ava('Area.fromRect 0, 0, 1, 2', (t) => {
    let rect = {

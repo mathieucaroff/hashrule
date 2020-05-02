@@ -50,7 +50,7 @@ export interface RequestProp {
    output: OutputFunction
 }
 
-export type DrawFunction = (input: BoiledContent) => ImageData
+export type DrawFunction = (input: BoiledContent, image: ImageData) => void
 
 export type OutputFunction = (image: ImageData, region: Rect) => void
 

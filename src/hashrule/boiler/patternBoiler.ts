@@ -1,5 +1,6 @@
 import { BoilerFunction, Boiler, BoiledPoint } from '../type/boilerType'
-import { Pattern, PatternElement } from '../type/patternType'
+import { Pattern } from '../type/patternType'
+import { invisibleRight, invisibleLeft } from './invisibleSide'
 
 export interface PatternBoilerProp {
    patternList: Pattern[]
@@ -24,14 +25,16 @@ export let createPatternBoiler = (prop: PatternBoilerProp): Boiler => {
    })
 
    let boil: BoilerFunction = (input) => {
-      return input.slice(input.length / 2).map((line) =>
-         line.slice(line.length / 2).map(
-            (state): BoiledPoint => ({
-               patternNumber: 0,
-               state,
-            }),
-         ),
-      )
+      return input.slice(input.length / 2).map((line) => {
+         let fraction = line.length / 4
+
+         let lineCenter = line.slice(fraction, 3 * fraction)
+
+         return lineCenter.map((state) => ({
+            patternNumber: 0,
+            state,
+         }))
+      })
    }
 
    let marginLeft = Math.max(...marginLeftList)
@@ -45,42 +48,3 @@ export let createPatternBoiler = (prop: PatternBoilerProp): Boiler => {
       boil,
    }
 }
-
-let invisibleSide = (reordered: any) => (patternElemList: PatternElement[]) => {
-   let margin = 0
-   for (let pattern of reordered(patternElemList)) {
-      if (pattern.visibility === 'hidden') {
-         margin += pattern.width
-      } else {
-         if (pattern.type === 'group') {
-            margin += invisibleSide(reordered)(pattern.content)
-         }
-         break
-      }
-   }
-   return margin
-}
-
-let invisibleLeft = invisibleSide((li) => li)
-let invisibleRight = invisibleSide((li) => [...li].reverse())
-
-let pA = { visibility: 'hidden', type: 'set', width: 4 } as any
-let pB = { visibility: 'visible', type: 'set', width: 3 } as any
-let pC = { visibility: 'visible', type: 'group', content: [pA, pB] } as any
-let pD = { visibility: 'visible', type: 'group', content: [pB, pA] } as any
-let pE = { visibility: 'visible', type: 'group', content: [pA, pA, pB] } as any
-let pF = { visibility: 'visible', type: 'group', content: [pB, pA, pA] } as any
-let pG = { visibility: 'visible', type: 'group', content: [pB, pB, pA] } as any
-
-console.assert(invisibleLeft([pA]) === 4)
-console.assert(invisibleLeft([pB]) === 0)
-console.assert(invisibleLeft([pC]) === 4)
-console.assert(invisibleLeft([pD]) === 0)
-console.assert(invisibleLeft([pE]) === 8)
-console.assert(invisibleLeft([pF]) === 0)
-console.assert(invisibleLeft([pG]) === 0)
-
-console.assert(invisibleLeft([pA, pA]) === 8)
-console.assert(invisibleLeft([pA, pB]) === 4)
-console.assert(invisibleLeft([pB, pA]) === 0)
-console.assert(invisibleLeft([pB, pB]) === 0)

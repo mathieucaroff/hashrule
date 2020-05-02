@@ -53,7 +53,7 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
       weight: 'anchored',
    }
 
-   const groundAutomaton = createGroundAutomaton(automaton)
+   let groundAutomaton = createGroundAutomaton(automaton)
 
    let summonRoot = (v: Cell) => {
       let cell = root.automaton.summon(v, v, root.y, root.x, anchorInfo)
