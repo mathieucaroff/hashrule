@@ -1,4 +1,4 @@
-import { Cell } from './type/cellType'
+import { Cell } from './type/oldCellType'
 import { Region } from './type/rectType'
 
 export interface CcdoProp<TCell extends Cell, TDeriv> {

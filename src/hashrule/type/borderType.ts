@@ -1,8 +1,18 @@
 export type State = number
 
-export interface StochasticState {
+export type StochasticState =
+   | RandomStochasticState
+   | DeterministicStochasticState
+
+export interface RandomStochasticState {
+   kind: 'random'
    cumulativeMap: number[]
    total: number
+}
+
+export interface DeterministicStochasticState {
+   kind: 'deterministic'
+   state: State
 }
 
 export type BasePattern = StochasticState[]

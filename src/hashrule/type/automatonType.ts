@@ -8,7 +8,7 @@ import {
    GroundCell,
    VoidAirCell,
    VoidGroundCell,
-} from './cellType'
+} from './oldCellType'
 
 /**
  * TFuseIn   : Type of  Input Cell for .fuse()
@@ -118,4 +118,5 @@ export interface ExternalAutomaton {
    stateCount: number
    neigboorhoodSize: number
    localRule: (arr: number[]) => number
+   hash: string
 }

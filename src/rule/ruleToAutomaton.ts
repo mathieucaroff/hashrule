@@ -19,5 +19,6 @@ export let ruleToAutomaton = (rule: Rule): ExternalAutomaton => {
       neigboorhoodSize: 3,
       stateCount: 2,
       localRule,
+      hash: `2:3:${rule}`,
    }
 }

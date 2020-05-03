@@ -2,7 +2,7 @@
  * Make an imageData out of some boiled content
  */
 
-import { DrawFunction } from '../hashrule/type/hashlifeType'
+import { DrawFunction } from '../hashrule/type/hashruleType'
 import { BoiledContent } from '../hashrule/type/boilerType'
 
 type Triplet = [number, number, number]

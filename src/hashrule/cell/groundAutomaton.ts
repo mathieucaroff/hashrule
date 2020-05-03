@@ -10,7 +10,7 @@ import {
    GroundCell,
    VoidGroundCell,
    FloatingGroundCell,
-} from '../type/cellType'
+} from '../type/oldCellType'
 
 import { memoized } from '../util/memoized'
 

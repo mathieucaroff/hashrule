@@ -2,20 +2,20 @@ import { createAirAutomaton } from './cell/airAutomaton'
 import { AirAutomaton, AnchorProp } from './type/automatonType'
 import { BoiledContent, Content } from './type/boilerType'
 import { derivationCache } from './derivationCache'
-import { AirCell, Cell, GroundCell } from './type/cellType'
+import { AirCell, Cell, GroundCell } from './type/oldCellType'
 import {
-   explore,
+   oldExplore,
    fullCellRegion,
    fullPropagate,
    halfCellRegion,
    halfPropagate,
-} from './explore/explore'
+} from './explore/oldExplore'
 import { createGroundAutomaton } from './cell/groundAutomaton'
-import { Hashrule, HashruleProp, RequestProp } from './type/hashlifeType'
+import { Hashrule, HashruleProp, RequestProp } from './type/hashruleType'
 import { createPolicy } from './policy'
 import { createArray2d } from './util/array2d'
 import { putFunction } from './util/putFunction'
-import { Frame, Region } from './type/rectType'
+import { Frame, Region, Rect } from './type/rectType'
 import { flatCell } from '../trash/flatCell'
 
 let w: any = window
@@ -99,7 +99,9 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
     *
     * @param frame -- the frame to fit to
     */
-   let upFitTo = (frame: Frame) => {
+   let upFitTo = (rect: Rect) => {
+      let frame = Region.fromRect(rect)
+
       let fitsHorizontally = () =>
          root.automaton.size / 4 >= -frame.xleft &&
          root.automaton.size / 4 >= frame.xright - 1
@@ -121,16 +123,9 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
     * @param prop contains the target region and the output function
     */
    let request = (prop: RequestProp) => {
-      let { region, output } = prop
+      let { rect: rect, output } = prop
 
-      upFitTo(region)
-
-      if (w.d) debugger
-
-      let relativeRegion = Region.recenter(region, {
-         x: region.center.x - root.x,
-         y: region.center.y - root.y,
-      })
+      upFitTo(rect)
 
       // console.log(
       //    'request',
@@ -139,7 +134,7 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
       //    relativeRegion.rect,
       // )
 
-      explore(root.cell, relativeRegion, {
+      oldExplore(root.cell, relativeRegion, {
          propagate: halfPropagate,
          cellRegionGetter: halfCellRegion,
          level: policy.imageLevel,
@@ -184,7 +179,7 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
          output: putInBuffer,
       })
 
-      explore(cell, region, {
+      oldExplore(cell, region, {
          propagate: halfPropagate,
          cellRegionGetter: halfCellRegion,
          level: policy.boilLevel,
@@ -219,7 +214,7 @@ export let createHashrule = (prop: HashruleProp): Hashrule => {
          putInContent(derivateContent(cell), region)
       }
 
-      explore(cell, region, {
+      oldExplore(cell, region, {
          propagate: fullPropagate,
          cellRegionGetter: fullCellRegion,
          level: 0,

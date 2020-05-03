@@ -1,8 +1,8 @@
 import { createDisplay } from '../display/display'
 import { createPatternBoiler } from '../hashrule/boiler/patternBoiler'
 import { createHashrule } from '../hashrule/hashrule'
-import { randomInteger } from '../hashrule/random/randomInteger'
-import { createRandomMapper } from '../hashrule/random/randomMapper'
+import { randomInteger } from '../util/randomInteger'
+import { createRandomMapper } from '../random/randomMapper'
 import { StochasticState } from '../hashrule/type/borderType'
 import { Region } from '../hashrule/type/rectType'
 import { initPage } from '../page/init'
@@ -62,7 +62,7 @@ export let main = () => {
    let t = 0
    let render = () => {
       hashlife.request({
-         region: Region.fromRect({
+         rect: Region.fromRect({
             x: 0,
             y: 0,
             width: canvas.width,

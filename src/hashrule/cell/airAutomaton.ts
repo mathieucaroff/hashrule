@@ -5,10 +5,8 @@ import {
    Cell,
    FloatingAirCell,
    VoidAirCell,
-   FloatingCell,
-} from '../type/cellType'
+} from '../type/oldCellType'
 import { memoized } from '../util/memoized'
-import { flatCell } from '../../trash/flatCell'
 
 export let createAirAutomaton = (child: AirAutomaton): AirAutomaton => {
    let id = 0

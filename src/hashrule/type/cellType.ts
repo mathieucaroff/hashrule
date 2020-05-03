@@ -1,101 +1,33 @@
-import { GroundAutomaton, AirAutomaton } from './automatonType'
+import { Board } from './boardType'
+import { CellLocation } from './locationType'
 
 /**
- * GroundCell
+ * A cell is a board with added information allowing to:
+ * - compute the result of the cell
+ * - obtain the pre-display area of the cell
+ * - obtain the display area of the cell
  */
-export type Atom = number[]
-
-export interface AnchoredGroundCell {
-   type: 'ground'
-   weight: 'anchored'
-   id: number
-   left: Atom
-   right: Atom
-   result: () => Atom
-   automaton: GroundAutomaton
+export interface Cell {
+   board: Board
+   cellContext: CellContext
 }
-
-export interface FloatingGroundCell {
-   type: 'ground'
-   weight: 'floating'
-   id: number
-   left: Atom
-   right: Atom
-   result: () => Atom
-   __table: Record<number, FloatingAirCell>
-   automaton: GroundAutomaton
-}
-
-export interface VoidGroundCell {
-   type: 'ground'
-   weight: 'void'
-   id: number
-   left: Atom
-   right: Atom
-   result: () => Atom
-   automaton: GroundAutomaton
-}
-
-export type GroundCell =
-   | AnchoredGroundCell
-   | FloatingGroundCell
-   | VoidGroundCell
 
 /**
- * AirCell
+ * Cell contexts are hashable.
  */
-// export interface AnchoredAirCell extends CellGet<Cell> {
-export interface AnchoredAirCell extends CellGet<AirCell> {
-   type: 'air'
-   weight: 'anchored'
-   id: number
-   automaton: AirAutomaton
+export interface CellContext {
+   location: CellLocation
+   cellGlobal: CellGlobal
 }
-
-// export interface FloatingAirCell extends CellGet<FloatingCell> {
-export interface FloatingAirCell extends CellGet<FloatingAirCell> {
-   type: 'air'
-   weight: 'floating'
-   id: number
-   __table: Record<number, FloatingAirCell>
-   automaton: AirAutomaton
-}
-
-// export interface VoidAirCell extends CellGet<VoidCell> {
-export interface VoidAirCell extends CellGet<VoidAirCell> {
-   type: 'air'
-   weight: 'void'
-   id: number
-   automaton: AirAutomaton
-}
-
-export type AirCell = AnchoredAirCell | FloatingAirCell | VoidAirCell
 
 /**
- * Cell
+ * Some data passed between cells
  */
-export type Cell = AirCell | GroundCell
-export type AnchoredCell = AnchoredAirCell | AnchoredGroundCell
-export type FloatingCell = FloatingAirCell | FloatingGroundCell
-export type VoidCell = VoidAirCell | VoidGroundCell
+export interface CellGlobal {
+   getId: GetIdFunction
+}
 
 /**
- * CellGet
+ * Function returning a unique id for the given level
  */
-export interface CellGet<TC, F = () => TC> {
-   // compute
-   left: TC
-   right: TC
-   center: F
-   result: F
-   // fullPropagate
-   highleft: F
-   highright: F
-   midleft: F
-   midright: F
-   // halfPropagate
-   lowtopleft: F
-   lowtopright: F
-   lowbotleft: F
-   lowbotright: F
-}
+export type GetIdFunction = (level: number) => number

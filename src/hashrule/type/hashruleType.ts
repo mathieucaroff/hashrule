@@ -1,43 +1,37 @@
 import { ExternalAutomaton } from './automatonType'
 import { BoiledContent, Boiler } from './boilerType'
-import { RandomMapperObj } from './randomMapper'
+import { TopologyContext } from './locationType'
 import { Rect } from './rectType'
-import { TopologyInfiniteBoth } from './topologyType'
 
 export interface Hashrule {
    request: (prop: RequestProp) => void
 }
 
-export interface HashruleProp {
-   /**
-    * Automaton to accelerate
-    */
-   automaton: ExternalAutomaton
-   /**
-    * Produces boiled content from content.
-    * Can be used to do pattern recognition.
-    */
-   boiler: Boiler
-   /**
-    * Writes boiled content to an imageData object.
-    */
-   draw: DrawFunction
-   /**
-    * Provides three deterministic seeded random function for top, left and
-    * right borders
-    */
-   random: RandomMapperObj
-   /**
-    * Finitness and size of the universe
-    */
-   topology: TopologyInfiniteBoth
-}
+/**
+ * @param automaton
+ * The automaton to accelerate
+ *
+ * @param boiler
+ * The boiler produces boiled content from content.
+ * It can be used to do pattern recognition.
+ *
+ * @param topologyContext
+ *
+ * Precise description of the topology, down to the exact values of the cells
+ * of the borders.
+ *
+ * TopologyContext provide a `.hash` which changes if some content changed
+ *
+ */
+export type HashruleCreatorFunction = (
+   automaton: ExternalAutomaton,
+) => (boiler: Boiler) => (topologyContext: TopologyContext) => Hashrule
 
 export interface RequestProp {
    /**
     * The region that must be covered by the data sent to the output function
     */
-   region: Rect
+   rect: Rect
    /**
     * An OutputFunction is a function that accepts an imageData and a region
     * describing where that image should be put.
@@ -50,7 +44,7 @@ export interface RequestProp {
    output: OutputFunction
 }
 
-export type DrawFunction = (input: BoiledContent, image: ImageData) => void
+// export type DrawFunction = (input: BoiledContent, image: ImageData) => void
 
 export type OutputFunction = (image: ImageData, region: Rect) => void
 
